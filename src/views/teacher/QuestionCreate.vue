@@ -95,7 +95,7 @@ export default {
         teacherId:null,
       },
       tempContent:null,
-      courseName:null,
+      courseName:this.$route.query.courseName.length>0? this.$route.query.courseName:null,
       types: ["单选", "多选","填空"],
       option:[],
       courseNameLists:[],
@@ -139,6 +139,7 @@ export default {
       }
     },
     submit() {
+      this.setCourseId();
       this.contentProcess();
       console.log("I'm submiting")
       if(this.quesInfo.content===null || this.quesInfo.content===""||
@@ -199,6 +200,8 @@ export default {
         if(op.length>1){
           this.msg="选项格式非法";
           return false;
+        }else if(op.length===0){
+          continue;
         }else{answerOpList.push(op)}
       }
       console.log(answerOpList)

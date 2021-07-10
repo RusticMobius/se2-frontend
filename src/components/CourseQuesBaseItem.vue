@@ -3,12 +3,12 @@
     <v-card-title class="headline">
       {{ courseName }}
     </v-card-title>
-    <v-card-text class="text">
-      题目数量：{{baseSize}}
-    </v-card-text>
     <v-card-actions>
-      <router-link :to="`/teacher/createQuestion`">
+      <router-link :to="{path:`/teacher/createQuestion`,query:{courseName:courseName}}">
         <v-btn text >创建题目</v-btn>
+      </router-link>
+      <router-link :to="{path:`/teacher/showCourseBase/${courseId}`,query:{courseName:courseName}}">
+        <v-btn text >查看题目</v-btn>
       </router-link>
     </v-card-actions>
   </v-card>
@@ -20,6 +20,10 @@ import Vue from "vue";
 export default Vue.extend({
   name: "CourseQuesBaseItem",
   props:{
+    courseId:{
+      type:Number,
+      default:null
+    },
     courseName:{
       type:String,
       default:null,

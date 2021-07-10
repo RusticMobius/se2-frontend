@@ -1,5 +1,5 @@
 <template>
-  <v-card :color="courseColor" dark width="380" height="260" class="ma-4 pa-2">
+  <v-card :color="courseColor" dark width="380" height="270" class="ma-4 pa-2">
     <v-card-title class="headline">
       {{ courseName }}
       <v-chip
@@ -32,7 +32,7 @@
         >{{ cost === 0 ? "免费购买" : "购买课程" }}</v-btn
       >
     </v-card-actions>
-    <v-row justify="end" class="pr-5">
+    <v-row justify="end" class="pr-5 mt-0">
       <v-btn
         class="mx-2 align-self-center"
         fab

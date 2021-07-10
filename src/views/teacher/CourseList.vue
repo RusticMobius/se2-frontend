@@ -67,6 +67,7 @@
             v-for="item in courseList"
             :key="item.id"
             :course-name="item.name"
+            :course-id="item.id"
             :course-color="baseColorList[(item.id) % baseColorList.length]"
         >
 

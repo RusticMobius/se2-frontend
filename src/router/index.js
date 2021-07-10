@@ -29,6 +29,7 @@ import TestCreate from "@/views/teacher/TestCreate";
 import QuestionCreate from "@/views/teacher/QuestionCreate";
 import TestEdit from "@/views/teacher/TestEdit";
 import Testing from "@/views/student/Testing";
+import CourseQuestionBase from "@/views/teacher/CourseQuestionBase";
 
 Vue.use(VueRouter);
 
@@ -107,6 +108,11 @@ const routes = [
         path: "edit/:courseId",
         name: "TeacherCourseEdit",
         component: CourseEdit
+      },
+      {
+        path:"showCourseBase/:courseId",
+        name: "TeacherQuestionBase",
+        component: CourseQuestionBase,
       },
       {
         path:"createTest",

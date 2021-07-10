@@ -1,6 +1,33 @@
 <template>
   <div>
     <v-container class="ma-8 pa-4">
+      <v-carousel
+          cycle
+          height="400"
+          hide-delimiter-background
+          show-arrows-on-hover
+          class="mb-10"
+      >
+        <v-carousel-item
+            v-for="(slide, i) in slides"
+            :key="i"
+        >
+          <v-sheet
+              :color="slide.color"
+              height="100%"
+          >
+            <v-row
+                class="fill-height"
+                align="center"
+                justify="center"
+            >
+              <div class="text-h2">
+                {{ slide.slogan }}
+              </div>
+            </v-row>
+          </v-sheet>
+        </v-carousel-item>
+      </v-carousel>
       <template>
         <!-- 分类课程 -->
         <v-card>
@@ -146,7 +173,25 @@ export default {
       searchText: "",
       searchCourse: [],
       searchTotalPage: 1,
-      searchCurrentPage: 1
+      searchCurrentPage: 1,
+
+      slides: [{
+        color:"blue lighten-1",
+        slogan:"Hello World! "
+      },{
+        color:"warning",
+        slogan:"知识，改变命运"
+      },{
+        color: "pink darken-2",
+        slogan: "What is essential is invisible to the eye."
+      }, {
+        color: 'red lighten-1',
+        slogan: "May it be"
+      },{
+        color: 'indigo',
+        slogan:"少年啊！快去成为神话！"
+      }
+      ],
     };
   },
   watch: {
