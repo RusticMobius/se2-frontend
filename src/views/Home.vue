@@ -21,7 +21,7 @@
                 align="center"
                 justify="center"
             >
-              <div class="text-h2">
+              <div class="text-h2" style="color: white">
                 {{ slide.slogan }}
               </div>
             </v-row>
