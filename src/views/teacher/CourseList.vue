@@ -53,7 +53,7 @@
       </v-row>
 
       <v-row>
-        <router-link :to="`/teacher/createQuestion`">
+        <router-link :to="{path:`/teacher/createQuestion`,query:{courseName:''}}">
           <v-btn class="ma-4 mb-8" rounded large dark color="indigo">
             <v-icon left dark large>
               mdi-plus

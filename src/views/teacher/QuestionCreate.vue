@@ -196,7 +196,7 @@ export default {
         return false;
       }
       var answerBodyList=this.quesInfo.content.split("#~#").slice(1);
-      var answerOpList=[];//选项标识列表
+      var answerOpList=[];
 
       for(let i=0;i<answerBodyList.length;i++){
         let op = answerBodyList[i].split('.',1)[0];
@@ -211,13 +211,13 @@ export default {
       console.log(answerOpList)
       var answerList=this.quesInfo.answer.split('');
       if(answerOpList.length<=1){
-        this.msg="选择题至少包含两个选项";//选择题不能只有一个选项
+        this.msg="选择题至少包含两个选项";
         return false;
       }
       for(let i=0;i<answerList.length;i++){
         if(answerOpList.indexOf(answerList[i])===-1){
           console.log(answerList[i])
-          this.msg="答案不包括在设置的选项内，请检查"//检查答案格式是否符合规范
+          this.msg="答案不包括在设置的选项内，请检查"
           return false;
         }
       }
