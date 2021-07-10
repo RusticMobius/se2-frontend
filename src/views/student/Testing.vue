@@ -90,12 +90,12 @@
 
     <v-toolbar v-if="isTesting&&!hasSubmitted" color="indigo lighten-1" dark class="mt-10 mb-10">
       <v-toolbar-title >本次测试共{{questionList.length}}道题目，您已作答{{answerNum}}道，提交后不可更改</v-toolbar-title>
-      <v-btn class="ml-16" @click="submit" color="orange" rounded outlined dark v-if="!hasSubmitted">
+      <v-btn class="ml-16" @click="checkEnd" color="orange" rounded outlined dark v-if="!hasSubmitted">
         确认提交
       </v-btn>
     </v-toolbar>
     <v-toolbar v-if="hasSubmitted" color="indigo lighten-1" dark class="mt-10 mb-10">
-      <v-toolbar-title>本次测试共{{testLength}}道题目，您共答对了{{correctCount+halfCorrectCount}}道题目，{{halfCorrectCount>0?"其中"+halfCorrectCount+"道没有选出所有的正确答案":""}} 总得分{{totalScore}}</v-toolbar-title>
+      <v-toolbar-title>本次测试共{{testLength}}道题目，您共答对了{{correctCount+halfCorrectCount}}道题目，{{halfCorrectCount>0?"其中"+halfCorrectCount+"道没有选出所有的正确答案":""}}，总得分为{{totalScore}}</v-toolbar-title>
     </v-toolbar>
     <v-toolbar v-if="!hasSubmitted&&!isTesting" color="indigo lighten-1" dark class="mt-10 mb-10">
       <v-toolbar-title>您未参与本次测试</v-toolbar-title>
@@ -247,24 +247,30 @@ export default {
           this.userAnswerList[i].score=score;
 
         }
-        if(this.userAnswerList[i].userAnswer!==""){
+        if(this.userAnswerList[i].info!==""){
           this.answerNum+=1;
         }
+        //console.log(this.answerNum)
       }
-      //console.log(this.answerNum)
+     // console.log(this.answerNum)
     },
-    submit(){
+    checkEnd(){
       var currentTime = new Date().getTime();
       console.log(currentTime,this.endTime)
-      if(currentTime>=this.endTime){//检查提交时间是否在截止时间之前
+      if(currentTime>=this.endTime) {//检查提交时间是否在截止时间之前
         this.showFailDialog = true;
         this.msg = "提交逾期，考试已截止";
         setTimeout(() => {
           this.showFailDialog = false;
+          this.isTesting = false;
+          this.$router.go(0)
         }, 1000);
-        //刷新页面
-        this.$router.go(0)
+      }  //刷新页面
+      else{
+        this.submit()
       }
+    },
+    submit(){
       console.log("I'm submiting")
       console.log(this.userAnswerList)
       //检查是否答完所有题目

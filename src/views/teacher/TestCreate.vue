@@ -181,6 +181,7 @@ export default Vue.extend( {
 
     },
     setCourseId() {
+      this.selectedQuesId=[];
       //设置课程id用于创建测试
       this.questionList=[];
       for (let i = 0; i < this.courseList.length; i++) {
