@@ -30,13 +30,5 @@
     "vue-cli-plugin-vuetify": "~2.3.1",
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.7.0"
-  },
-  "description": "目前学生的课程列表界面中，可以展示热门课程，课程的点赞数量，和一个点赞按钮，点赞按钮同时承担了点赞与取消点赞的功能",
-  "main": "babel.config.js",
-  "repository": {
-    "type": "git",
-    "url": "http://seecoder-gitlab-gitlab.seec.seecoder.cn/redder/course-front"
-  },
-  "author": "",
-  "license": "ISC"
+  }
 }
