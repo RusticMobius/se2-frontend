@@ -255,6 +255,7 @@ export default {
     },
     submit(){
       var currentTime = new Date().getTime();
+      console.log(currentTime,this.endTime)
       if(currentTime>=this.endTime){//检查提交时间是否在截止时间之前
         this.showFailDialog = true;
         this.msg = "提交逾期，考试已截止";

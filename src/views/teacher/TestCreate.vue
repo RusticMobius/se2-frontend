@@ -64,8 +64,8 @@
       <v-toolbar color="deep-purple lighten-2" dark class="mt-10 mb-10">
         <v-toolbar-title>选择题目 ( {{ selectedQuesId.length }} / {{testLength}} ) 已选{{selectedQuesId.length}}</v-toolbar-title>
       </v-toolbar>
-      <v-row v-for="ques in questionList" :key="ques.id">
-        <v-checkbox :label="ques.id+''" :value="ques.id" class="ml-10 mt-4" color="indigo" v-model="selectedQuesId" @change="checkLength"></v-checkbox>
+      <v-row v-for="(ques,index) in questionList" :key="index+1">
+        <v-checkbox :label="(index+1)+''" :value="ques.id" class="ml-10 mt-4" color="indigo" v-model="selectedQuesId" @change="checkLength"></v-checkbox>
         <question-item
             :key="ques.id"
             :teacher-id="ques.teacherId"
@@ -248,7 +248,7 @@ export default Vue.extend( {
           const uid = window.localStorage.getItem("userId");
           this.testInfo.teacherId = uid;
           console.log(this.testLength);
-          this.testInfo.length = 0;
+          this.testInfo.length = this.testLength;
           const payload = {
             ...this.testInfo
           };
