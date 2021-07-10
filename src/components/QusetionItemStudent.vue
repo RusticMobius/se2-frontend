@@ -40,6 +40,7 @@
 <script>
 import Vue from "vue";
 export default Vue.extend({
+  //习题学生视窗，具有作答和回传答案的功能
   name: "QusetionItemStudent",
   props:{
     inTestDuration:{
@@ -95,6 +96,7 @@ export default Vue.extend({
   mounted() {
     console.log(this.hasNotSubmitted)
     if(this.testState){
+      //处理答案用于比对
       if(this.type!="填空"){
         this.isSelect=true;
         this.answerList=this.content.split("#~#").slice(1);
@@ -112,7 +114,7 @@ export default Vue.extend({
         this.isBlank=true;
         this.quesBody=this.content;
       }
-    }else{
+    }else{//不在测试状态，这个功能最终没有用到因为参数传递异步的问题不能很好展现答案，答案统一用QusetionItem展示
       if(this.type!="填空"){
         let correcntAnswerList=this.answer.split("")
         this.isSelect=true;
@@ -140,6 +142,7 @@ export default Vue.extend({
   },
   methods:{
     setBtnColor(option){
+      //作答之后设置选项颜色展示选中状态并设置用户作答信息
       if(this.testState){
         for(let i=0;i<this.btnGroup.length;i++){
           if(this.btnGroup[i].option===option){
@@ -151,10 +154,11 @@ export default Vue.extend({
                 this.userAnswer+=option;
               }
             }else{
+              //取消选中
               this.btnGroup[i].color=this.nonSelectedBtnColor;
               if(this.btnGroup[i].type==="单选"){
-                this.userAnswer="";
-              }else{
+                this.userAnswer=""; //单选答案置空
+              }else{  //  多选删除该答案
                 this.userAnswer=this.userAnswer.replaceAll(option,"");
               }
             }
@@ -172,14 +176,14 @@ export default Vue.extend({
     submitQuesAnswer:function (){
 
       if(this.type!=="多选"){
-        if(this.userAnswer===this.answer){
+        if(this.userAnswer===this.answer){//不是多选答案相同直接返回满分
           this.$emit("getAnswer",this.quesId,this.userAnswer,10);
           return;
         }else{
           this.$emit("getAnswer",this.quesId,this.userAnswer,0);
           return;
         }
-      }else{
+      }else{//多选的话逐一比对选项，不能直接比较，选项顺序可能不同
         var userAnswerList=this.userAnswer.split('');
         if((userAnswerList.length>this.answer.length)||(userAnswerList.length===0)){
           //选多不选不得分
@@ -190,12 +194,14 @@ export default Vue.extend({
        //   console.log(answerList,userAnswerList)
           for(let i=0;i<userAnswerList.length;i++){
             if(answerList.indexOf(userAnswerList[i])===-1) {
+              //错选不得分
               console.log(userAnswerList[i])
               this.$emit("getAnswer", this.quesId, this.userAnswer, 0);
               return;
             }
           }
           if(userAnswerList.length<answerList.length){
+            //少选得一半分
             this.$emit("getAnswer", this.quesId, this.userAnswer, 5);
             return;
           }else{

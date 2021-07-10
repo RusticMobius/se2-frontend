@@ -40,6 +40,7 @@
 import Vue from "vue";
 
 export default Vue.extend({
+  //习题展示卡，可以展示用户作答信息和标准答案的比对，也可以只展示习题信息
   name: "QuestionItem",
   props:{
     quesId:{
@@ -88,8 +89,8 @@ export default Vue.extend({
       quesBody:"",
       isSelect:false,
       isBlank:false,
-      nonSelectedBtnColor:"indigo",
-      selectedBtnColor:"orange",
+      nonSelectedBtnColor:"indigo", //选中选项按钮颜色
+      selectedBtnColor:"orange",  //未选中颜色
       btnColor:"indigo",
       btnGroup:[],
       showAnswer:"",
@@ -99,16 +100,18 @@ export default Vue.extend({
     if(this.type!="填空"){
       let correcntAnswerList=this.answer.split("")
       this.isSelect=true;
-      this.answerList=this.content.split("#~#").slice(1);
-      this.quesBody=this.content.split("#~#")[0];
-     // console.log(correcntAnswerList)
+      this.answerList=this.content.split("#~#").slice(1);//选项列表
+      this.quesBody=this.content.split("#~#")[0];//题干
+     // 为每一道选择类题目设置选项答案展示
       for(let i=0;i<this.answerList.length;i++){
-        let option=this.answerList[i].split(".",1)
-        let content=this.answerList[i].replace(option+".","")
+        let option=this.answerList[i].split(".",1)  //选项标志
+        let content=this.answerList[i].replace(option+".","")   //选项内容
       //  console.log(correcntAnswerList.indexOf(option[0])>=0)
         if(correcntAnswerList.indexOf(option[0])>=0){
+          //如果正确答案里有这个选项标记为选出
           this.btnGroup.push({"option":option[0],"color":this.selectedBtnColor,"content":content,"type":this.type})
         }else{
+          //没有该选项标记为未选中状态
           this.btnGroup.push({"option":option[0],"color":this.nonSelectedBtnColor,"content":content,"type":this.type})
         }
 
@@ -120,15 +123,18 @@ export default Vue.extend({
       this.isBlank=true;
       this.quesBody=this.content;
     }
-    if(this.userAnswer.length>0){
-      var userList=this.userAnswer.split('')
+    if(this.userAnswer.length>0 && this.type!="填空"){
+      //选择题如果传入了用户选项记录则设置答案对比
+      var userList=this.userAnswer.split('')//用户答案列表
       for(let i=0;i<this.btnGroup.length;i++){
         for(let j=0;j<userList.length;j++){
           if(this.btnGroup[i].option===userList[j]){
             if(this.btnGroup[i].color===this.selectedBtnColor){
+              //答案相同标记正确
               this.btnGroup[i].color="blue lighten-1";
               break;
             }else{
+
               this.btnGroup[i].color="red lighten-1";
             }
           }
@@ -138,34 +144,6 @@ export default Vue.extend({
 
   },
   methods:{
-    setBtnColor(option){
-      for(let i=0;i<this.btnGroup.length;i++){
-        if(this.btnGroup[i].option===option){
-          if(this.btnGroup[i].color===this.nonSelectedBtnColor){
-            this.btnGroup[i].color=this.selectedBtnColor;
-            if(this.btnGroup[i].type==="单选"){
-              this.userAnswer=option;
-            }else{
-              this.userAnswer+=option;
-            }
-          }else{
-            this.btnGroup[i].color=this.nonSelectedBtnColor;
-            if(this.btnGroup[i].type==="单选"){
-              this.userAnswer="";
-            }else{
-              this.userAnswer=this.userAnswer.replaceAll(option,"");
-            }
-          }
-        }else{
-          if(this.btnGroup[i].type==="单选"){
-            this.btnGroup[i].color=this.nonSelectedBtnColor;
-          }
-        }
-      }
-      //console.log(this.
-      // )
-    },
-
   }
 })
 </script>

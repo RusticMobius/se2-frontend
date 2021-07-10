@@ -29,10 +29,10 @@
     <v-row
         v-for="(ques,index) in questionList"
         :key="ques.index">
+
       <v-chip  outlined dark class="ma-6" color="indigo">
         {{index+1}}
       </v-chip>
-
       <qusetion-item-student @getAnswer="processAnswer"
           v-if="isTesting&&!hasSubmitted"
           :in-test-duration=true
@@ -56,7 +56,7 @@
           :ques-id="ques.id"
           :type="ques.type"
           :show-analysis="true"
-          :user-answer="scoreList[index].info===undefined?'':scoreList[index].info"
+          :user-answer="correctScoreList[index].info===undefined?'':correctScoreList[index].info"
       >
       </question-item>
       <question-item
@@ -78,15 +78,16 @@
               dark
               large
               class="ma-6"
-              :color="scoreList[index].score===10?'blue lighten-1':(scoreList[index].score===5?'orange':'red lighten-1')"
+              :color="correctScoreList[index].score===10?'blue lighten-1':(correctScoreList[index].score===5?'orange':'red lighten-1')"
       ><v-avatar left>
-        <v-icon v-if="scoreList[index].score===10">mdi-checkbox-marked-circle</v-icon>
-        <v-icon v-if="scoreList[index].score!==10">mdi-close-circle </v-icon>
+        <v-icon v-if="correctScoreList[index].score===10">mdi-checkbox-marked-circle</v-icon>
+        <v-icon v-if="correctScoreList[index].score!==10">mdi-close-circle </v-icon>
       </v-avatar>
-        你的答案 : {{scoreList[index].info}}
+        你的答案 : {{correctScoreList[index].info}}
       </v-chip>
 
-    </v-row>
+      </v-row>
+
     <v-toolbar v-if="isTesting&&!hasSubmitted" color="indigo lighten-1" dark class="mt-10 mb-10">
       <v-toolbar-title >本次测试共{{questionList.length}}道题目，您已作答{{answerNum}}道，提交后不可更改</v-toolbar-title>
       <v-btn class="ml-16" @click="submit" color="orange" rounded outlined dark v-if="!hasSubmitted">
@@ -123,32 +124,37 @@ export default {
     return{
       scoreList:[],
       questionList:[],
-      isTesting:null,
-      hasSubmitted:false,
+      isTesting:null,   //是否在测试进行的日期内
+      hasSubmitted:false,   //是否已经提交测试
       testName:"",
       testLength:null,
-      userAnswerList:[],
+      userAnswerList:[],  //用户作答信息
       answerNum:0,
       dialog: false,
       showSuccessDialog: false,
       showFailDialog: false,
       msg: "",
-      correctCount:0,
-      halfCorrectCount:0,
-      totalScore:0,
+      correctCount:0,   //全对题目计数
+      halfCorrectCount:0, //半对计数
+      totalScore:0, //总分
+      endTime:null,
+      correctScoreList:[]//校准分数列表
     }
   },
   mounted() {
     const tid=this.$route.params.testId;
+    //检查是否处于测试时间内
     this.isTesting=(this.$route.query.state==="false"? false:true);
     console.log(this.isTesting)
     console.log(this.userAnswerList)
     getTestById(tid).then(res=>{
       this.testName=res.testName;
       this.testLength=res.length;
+      this.endTime=res.endTime;
       console.log(this.testLength)
     })
     getQuestionByTestId(tid).then(res=>{
+      //获取测试下设置的所有问题
       console.log(res);
       this.questionList=res||[];
       for(let i=0;i< this.questionList.length;i++){
@@ -156,20 +162,33 @@ export default {
           "info":"",
           "score":0})
       }
-      this.processScore();
+      this.processScore();//测试得分处理，如果有得分记录则测试已经提交，没有则未提交
 
     })
 
 
   },
   watch:{
-    "scoreList":{
+    "scoreList":{//监视得分情况变化，有得分纪录则已经提交测试，限制二次提交
       handler:function (val){
-        console.log(val)
+        //console.log(val)
 
         if(val.length===this.questionList.length){
           this.hasSubmitted=true;
-          console.log("calaulating")
+
+          //console.log("calaulating")
+          for(let i=0;i<this.questionList.length;i++){
+            //异步导致需要校准
+            for(let j=0;j<this.scoreList.length;j++){
+              //console.log(this.questionList[i].id,this.scoreList[j].questionId)
+              if(this.questionList[i].id===this.scoreList[j].questionId){
+                //console.log("equal")
+                this.correctScoreList.push(this.scoreList[j]);
+                break;
+              }
+            }
+          }
+          console.log(this.correctScoreList)
           for(let i=0;i<val.length;i++){
             if(this.scoreList[i].score===10){
               this.correctCount+=1;
@@ -194,6 +213,7 @@ export default {
 
 
     processScore(){
+      //处理得分纪录
       console.log("process score")
       const uid=window.localStorage.getItem("userId");
       const tid=this.$route.params.testId;
@@ -215,6 +235,7 @@ export default {
       }
     },
     processAnswer(questionId,answer,score){
+      //处理用户答案，计算得分和作答数目
       console.log(this.scoreList.length,this.questionList.length)
       this.answerNum=0;
       console.log(answer,questionId,score);
@@ -233,8 +254,19 @@ export default {
       //console.log(this.answerNum)
     },
     submit(){
+      var currentTime = new Date().getTime();
+      if(currentTime>=this.endTime){//检查提交时间是否在截止时间之前
+        this.showFailDialog = true;
+        this.msg = "提交逾期，考试已截止";
+        setTimeout(() => {
+          this.showFailDialog = false;
+        }, 1000);
+        //刷新页面
+        this.$router.go(0)
+      }
       console.log("I'm submiting")
       console.log(this.userAnswerList)
+      //检查是否答完所有题目
       for(let i=0;i<this.userAnswerList.length;i++){
         if(this.userAnswerList[i].userAnswer===""){
           this.showFailDialog = true;
@@ -248,6 +280,7 @@ export default {
       console.log(this.userAnswerList)
       const uid=window.localStorage.getItem("userId");
       const tid=this.$route.params.testId;
+      //为每一个问题提交分数记录
       for(let i=0;i<this.userAnswerList.length;i++){
         const payload={
           ...this.userAnswerList[i],
@@ -263,6 +296,7 @@ export default {
       this.hasSubmitted=true;
       this.processScore();
       this.$router.go(0)
+      //刷新页面
     }
   }
 }

@@ -114,7 +114,7 @@ import {addQuestionToTest} from "@/api/question_test";
 import {getQuestionByCourseId} from "@/api/question";
 
 export default Vue.extend( {
-  name: "TestCreate",
+  name: "TestCreate",//创建测试
   components:{
   QuestionItem,
   },
@@ -151,7 +151,7 @@ export default Vue.extend( {
     const uid = window.localStorage.getItem("userId");
     if (uid) {
       getTeacherCourses(uid).then(res => {
-        //console.log(res);
+        //获取教师所有课程
         for(var i=0;i<res.length;i++){
           //console.log(res[i])
           this.courseNameList.push(res[i].name);
@@ -164,6 +164,7 @@ export default Vue.extend( {
   },
   methods: {
     checkDateFormat(){
+      //检查日期格式，保证写入数据的正确性
       var reDateTime = /^(?:19|20)[0-9][0-9]-(?:(?:0[1-9])|(?:1[0-2]))-(?:(?:[0-2][1-9])|(?:[1-3][0-1])) (?:(?:[0-2][0-3])|(?:[0-1][0-9])):[0-5][0-9]:[0-5][0-9]$/;
       var isStartTime = reDateTime.test(this.formatStartTime);
       var isEndTime=reDateTime.test(this.formatEndTime);
@@ -180,6 +181,7 @@ export default Vue.extend( {
 
     },
     setCourseId() {
+      //设置课程id用于创建测试
       this.questionList=[];
       for (let i = 0; i < this.courseList.length; i++) {
         if (this.testInfo.courseName === this.courseList[i].name) {
@@ -188,6 +190,7 @@ export default Vue.extend( {
         }
       }
       getQuestionByCourseId(this.testInfo.courseId).then(res=>{
+        //获取所选课程的问题库，在其中进行选择
           for(let i=0;i<res.length;i++){
         this.questionList.push(res[i]);
         }
@@ -202,6 +205,7 @@ export default Vue.extend( {
           this.showFailDialog = false;
         }, 1000);
       }else{
+        //转换时间格式
         this.testInfo.startTime = this.dateConvertToStamp(this.formatStartTime);
         this.testInfo.endTime = this.dateConvertToStamp(this.formatEndTime);
         var currentTime = new Date().getTime();
@@ -214,7 +218,7 @@ export default Vue.extend( {
         } else if (this.selectedQuesId.length < this.testLength) {
           this.showFailDialog = true;
           this.msg = "所选题目数量不足";
-          setTimeout(() => {
+          setTimeout(() => {  //检查题目数量
             this.showFailDialog = false;
           }, 1000);
         } else if (this.testInfo.endTime === "" || this.testInfo.endTime === null ||
@@ -222,7 +226,7 @@ export default Vue.extend( {
             this.testInfo.courseId === "" || this.testInfo.courseId === null ||
             this.testInfo.name === "" || this.testInfo.name === null) {
           this.showFailDialog = true;
-          this.msg = "必填信息不能为空";
+          this.msg = "必填信息不能为空";  //检查测试相关信息完全
           setTimeout(() => {
             this.showFailDialog = false;
           }, 1000);
@@ -235,7 +239,7 @@ export default Vue.extend( {
 
         } else if (this.testInfo.startTime >= this.testInfo.endTime) {
           this.showFailDialog = true;
-          this.msg = "起止时间非法";
+          this.msg = "起止时间非法";    //起始时间不能晚于或等于截止时间
           setTimeout(() => {
             this.showFailDialog = false;
           }, 1000);
@@ -252,7 +256,7 @@ export default Vue.extend( {
             console.log(payload);
             createTest(payload).then(res => {
               console.log(res);
-              if (res.code === 1) {
+              if (res.code === 1) { //创建测试信息
                 const tid = res.data.id;
                 console.log(tid)
                 for(let index=0;index<this.selectedQuesId.length;index++){
@@ -261,7 +265,7 @@ export default Vue.extend( {
                     "testId":tid
                   }
                   addQuestionToTest(record).then(res=>{
-                    console.log(res)
+                    console.log(res)  //为测试中的所有问题添加记录
                   })
                 }
                 this.showSuccessDialog = true;
@@ -282,13 +286,13 @@ export default Vue.extend( {
 
       }
     },
-    dateConvertToStamp(date) {
+    dateConvertToStamp(date) {//日期转换为时间戳
       date = date.replace(new RegExp("-", "gm"), "/");
       var stamp = (new Date(date)).getTime(); //得到毫秒数
       console.log(stamp);
       return stamp;
     },
-    checkLength() {
+    checkLength() {//检查题目数量是否等于设置的题目数，两者必须相等
       // console.log("checking")
       if (this.testLength === 0) {
         this.showFailDialog = true;

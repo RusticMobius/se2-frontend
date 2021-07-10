@@ -77,6 +77,7 @@ export default Vue.extend( {
 
   },
   mounted() {
+    //已创建的测试教师视窗
     const tid=this.$route.params.testId;
     console.log(this.$route.params.testId)
 

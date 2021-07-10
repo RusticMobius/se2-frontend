@@ -33,6 +33,7 @@ import QuestionItem from "@/components/QuestionItem";
 import{getQuestionByCourseId} from "@/api/question";
 
 export default Vue.extend({
+  //课程习题库页面
 
   name: "CourseQuestionBase",
   components:{
@@ -41,7 +42,7 @@ export default Vue.extend({
   data(){
     return{
       questionList:[],
-      showAnalysis: true,
+      showAnalysis: true,//展示解析
       courseName:"",
     }
   },
@@ -49,6 +50,7 @@ export default Vue.extend({
     this.courseName=this.$route.query.courseName;
     const cid = this.$route.params.courseId;
     getQuestionByCourseId(cid).then(res=>{
+      //按课程ID获取课程习题
       for(let i=0;i<res.length;i++){
         this.questionList.push(res[i])
         console.log(res[i])

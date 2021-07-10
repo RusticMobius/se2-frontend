@@ -83,7 +83,7 @@ import { getTeacherCourses} from "@/api/course";
 import {createQuestion} from "@/api/question";
 
 export default {
-  name: "QuestionCreate",
+  name: "QuestionCreate",//创建问题页面
   data() {
     return {
       quesInfo: {
@@ -110,7 +110,7 @@ export default {
     const uid = window.localStorage.getItem("userId");
     if (uid) {
       getTeacherCourses(uid).then(res => {
-        //console.log(res);
+        //console.log(res); 按教师ID获取教师的课程，便于按课程添加页面
         for(var i=0;i<res.length;i++){
           console.log(res[i])
           this.courseNameLists.push(res[i].name);
@@ -124,6 +124,7 @@ export default {
   methods:{
     contentProcess(){
       if(this.quesInfo.type!=="填空"){
+        //单选题格式化 questionBody #~# option1 #~#option2...
         this.quesInfo.content=this.tempContent.replaceAll('\n',"#~#");
         console.log(this.quesInfo.content);
       }else{
@@ -131,6 +132,7 @@ export default {
       }
     },
     setCourseId(){
+      //获取课程id，用于创建题目
       for(let i=0;i<this.courseList.length;i++){
         if(this.courseName===this.courseList[i].name){
           this.quesInfo.courseId=this.courseList[i].id;
@@ -147,11 +149,12 @@ export default {
       this.quesInfo.answer===null||this.quesInfo.answer===""||
       this.quesInfo.type===null||this.quesInfo.answer==="") {
         this.showFailDialog = true;
-        this.msg = "必填信息不能为空";
+        this.msg = "必填信息不能为空";//题干，答案，题目所属课程，题目类型不能为空
         setTimeout(() => {
           this.showFailDialog = false;
         }, 1000);
       }else if(!this.checkAnswerFormat()){
+        //检查答案格式是否符合题目类型
         this.showFailDialog = true;
         setTimeout(() => {
           this.showFailDialog = false;
@@ -165,6 +168,7 @@ export default {
         }
         console.log(payload)
         if(uid){
+          //创建题目
           createQuestion(payload).then(res=>{
             console.log(res);
             if (res.code === 1) {
@@ -183,7 +187,7 @@ export default {
         }
       }
     },
-    checkAnswerFormat(){//153
+    checkAnswerFormat(){
       if(this.quesInfo.type==='填空'){
         return true;
       }
@@ -192,28 +196,28 @@ export default {
         return false;
       }
       var answerBodyList=this.quesInfo.content.split("#~#").slice(1);
-      var answerOpList=[];
+      var answerOpList=[];//选项标识列表
 
       for(let i=0;i<answerBodyList.length;i++){
         let op = answerBodyList[i].split('.',1)[0];
         console.log(op.length)
         if(op.length>1){
-          this.msg="选项格式非法";
+          this.msg="选项格式非法";//选项格式应该为 X（单个字母）.选项内容
           return false;
-        }else if(op.length===0){
+        }else if(op.length===0){//选项标识为空
           continue;
         }else{answerOpList.push(op)}
       }
       console.log(answerOpList)
       var answerList=this.quesInfo.answer.split('');
       if(answerOpList.length<=1){
-        this.msg="选择题至少包含两个选项";
+        this.msg="选择题至少包含两个选项";//选择题不能只有一个选项
         return false;
       }
       for(let i=0;i<answerList.length;i++){
         if(answerOpList.indexOf(answerList[i])===-1){
           console.log(answerList[i])
-          this.msg="答案不包括在设置的选项内，请检查"
+          this.msg="答案不包括在设置的选项内，请检查"//检查答案格式是否符合规范
           return false;
         }
       }

@@ -26,6 +26,7 @@
 <script lang="ts">
 import Vue from "vue";
 export default Vue.extend({
+  //测试用例用户视窗
   name: "TestItemTeacher",
   props:{
     courseName: {

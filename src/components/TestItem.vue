@@ -26,6 +26,7 @@
 <script lang="ts">
 import Vue from "vue";
 export default Vue.extend({
+  //测试学生视窗
   name: "TestItem",
   props:{
     courseName: {
@@ -65,6 +66,7 @@ export default Vue.extend({
     }
   },
   mounted() {
+    //时间检测，判断测试状态，设置子组件
     var date=(new Date()).getTime();
     if(date>this.endTime){
       this.testState=false;
@@ -96,6 +98,7 @@ export default Vue.extend({
   },
   methods:{
     stampConvertToDate(stamp){
+      //时间戳转格式化时间
       let time=new Date(stamp);
       var year = time.getFullYear();
       var month =time.getMonth()+1;
@@ -113,6 +116,7 @@ export default Vue.extend({
       return str;
     },
     dateConvertToStamp(date){
+      //格式化时间转时间戳
       date= date.replace(new RegExp("-","gm"),"/");
       var stamp = (new Date(date)).getTime(); //得到毫秒数
       console.log(stamp);
