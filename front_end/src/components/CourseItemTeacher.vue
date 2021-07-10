@@ -21,6 +21,7 @@
 import Vue from "vue";
 export default Vue.extend({
   name: "CourseItemTeacher",
+
   props: {
     courseName: {
       type: String,

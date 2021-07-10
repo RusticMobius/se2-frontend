@@ -25,6 +25,10 @@ import Register from "@/views/Register.vue";
 import Home from "@/views/Home.vue";
 // authentication
 import { judgeTeacher, judgeStudent } from "@/util/auth";
+import TestCreate from "@/views/teacher/TestCreate";
+import QuestionCreate from "@/views/teacher/QuestionCreate";
+import TestEdit from "@/views/teacher/TestEdit";
+import Testing from "@/views/student/Testing";
 
 Vue.use(VueRouter);
 
@@ -103,7 +107,23 @@ const routes = [
         path: "edit/:courseId",
         name: "TeacherCourseEdit",
         component: CourseEdit
-      }
+      },
+      {
+        path:"createTest",
+        name:"TeacherTestCreate",
+        component: TestCreate
+      },
+      {
+        path:"createQuestion",
+        name:"TeacherQuestionCreate",
+        component: QuestionCreate
+      },
+      {
+        path:"editTest/:testId",
+        name:"TeacherTestEdit",
+        component: TestEdit
+      },
+
     ]
   },
   {
@@ -135,6 +155,11 @@ const routes = [
         path: "peek/:courseId",
         name: "CoursePeek",
         component: CoursePeek
+      },
+      {
+        path:"testing/:testId",
+        name: "StudentTesting",
+        component: Testing,
       }
     ]
   }

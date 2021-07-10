@@ -75,6 +75,7 @@
 <script>
 import { createCourse } from "@/api/course";
 
+
 export default {
   name: "CourseCreate",
 

@@ -7,6 +7,7 @@
         class="ml-4"
         v-show="status === 1 || status === 0"
         :color="chipColor[status]"
+
       >
         {{ chip[status] }}
       </v-chip>

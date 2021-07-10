@@ -184,6 +184,32 @@
         >
         </course-item>
       </v-row>
+      <v-row class="mt-8 mb-2">
+        <v-chip
+            class="ma-2"
+            color="deep-purple lighten-3"
+            label
+            text-color="white"
+        >
+          <v-icon left>
+            mdi-label
+          </v-icon>
+          我的测试
+        </v-chip>
+      </v-row>
+      <v-row>
+        <test-item
+            v-for="test in testList"
+            :key="test.id"
+            :test-name="test.testName"
+            :test-id="test.id"
+            :end-time="test.endTime"
+            :start-time="test.startTime"
+            :test-state="test.state"
+            :test-length="test.length"
+            :course-name="test.courseName"
+        ></test-item>
+      </v-row>
     </v-container>
 
     <!-- 购买提示对话框 -->
@@ -259,6 +285,7 @@
 
 <script>
 import CourseItem from "@/components/CourseItem.vue";
+import TestItem from "@/components/TestItem";
 import {
   getCoursesByType,
   getCoursesByKey,
@@ -276,12 +303,14 @@ import {
   useCoupon
 } from "@/api/order";
 import { getAvailableCouponsForOrder } from "@/api/coupon";
+import {getTestByCourse} from "@/api/test";
 
 export default {
   name: "StudentCourseList",
 
   components: {
-    CourseItem
+    CourseItem,
+    TestItem
   },
 
   data() {
@@ -347,7 +376,8 @@ export default {
       coupons: [],
       selectedCoupons: [],
       settleDialog: false,
-      currentOrder: {}
+      currentOrder: {},
+      testList:[],
     };
   },
 
@@ -442,8 +472,21 @@ export default {
       const uid = window.localStorage.getItem("userId");
       getBoughtCourses(uid).then(res => {
         this.boughtCoursesList = res || [];
+        console.log(this.boughtCoursesList)
+
+        for(let i=0;i<this.boughtCoursesList.length;i++){
+          console.log("in")
+          getTestByCourse(this.boughtCoursesList[i].id).then(res=>{
+            console.log(res)
+            for(let j=0;j<res.length;j++){
+              this.testList.push(res[j])
+            }
+          })
+        }
+        console.log(this.testList)
       });
     },
+
 
     fetchData() {
       ["primary", "medium", "advanced"].forEach(t => {
@@ -452,6 +495,7 @@ export default {
       this.handleSearchCourse();
       this.getUserBoughtCourses();
       this.handleHotCourse();
+
     },
 
     onSelectCoupon({ item, value }) {
