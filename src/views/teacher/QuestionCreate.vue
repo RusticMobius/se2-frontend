@@ -197,7 +197,7 @@ export default {
       }
       var answerBodyList=this.quesInfo.content.split("#~#").slice(1);
       var answerOpList=[];
-
+      this.quesInfo.content=this.quesInfo.content.split("#~#")[0]
       for(let i=0;i<answerBodyList.length;i++){
         let op = answerBodyList[i].split('.',1)[0];
         console.log(op.length)
@@ -206,7 +206,9 @@ export default {
           return false;
         }else if(op.length===0){//选项标识为空
           continue;
-        }else{answerOpList.push(op)}
+        }else{
+          answerOpList.push(op)
+          this.quesInfo.content+="#~#"+answerBodyList[i]}
       }
       console.log(answerOpList)
       var answerList=this.quesInfo.answer.split('');

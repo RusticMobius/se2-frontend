@@ -54,7 +54,6 @@
             disabled label="题目列表"
             :value="selectedQuesId"
             v-model="selectedQuesId"
-
         ></v-text-field>
 
         <v-btn class="ml-0 mt-8 " @click="submit" color="indigo" dark>
